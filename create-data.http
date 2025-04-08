@@ -1,0 +1,41 @@
+# vscode users: install httpYac extension to easily use this file
+
+### Create a new account
+POST http://localhost:3000/accounts
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe2@example.com",
+  "address": {
+    "street": "123 Main St",
+    "city": "Springfield",
+    "state": "IL",
+    "postalCode": "62701",
+    "country": "USA"
+  }
+}
+
+### Create a new product
+POST http://localhost:3001/products
+Content-Type: application/json
+
+{
+  "name": "Premium Widget",
+  "description": "High-quality widget for all your needs",
+  "price": 2999
+}
+
+### Create a new order
+POST http://localhost:3001/orders
+Content-Type: application/json
+
+{
+  "account_id": "4",
+  "items": [
+    {
+      "product_id": "1",
+      "quantity": 2
+    }
+  ]
+}

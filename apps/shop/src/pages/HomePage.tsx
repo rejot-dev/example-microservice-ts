@@ -1,0 +1,85 @@
+import React from "react";
+
+const ServiceBox: React.FC<{ title: string; children?: React.ReactNode }> = ({
+  title,
+  children,
+}) => (
+  <div className="min-w-[120px] rounded border p-4 text-center shadow">
+    <h3 className="mb-2 font-semibold">{title}</h3>
+    {children}
+  </div>
+);
+
+const Arrow: React.FC<{
+  direction: "right" | "down" | "left" | "up";
+  className?: string;
+}> = ({ direction, className }) => {
+  let arrowChar = "";
+  switch (direction) {
+    case "right":
+      arrowChar = "→";
+      break;
+    case "down":
+      arrowChar = "↓";
+      break;
+    case "left":
+      arrowChar = "←";
+      break;
+    case "up":
+      arrowChar = "↑";
+      break;
+  }
+  return <div className={`mx-4 text-2xl font-bold ${className}`}>{arrowChar}</div>;
+};
+
+const HomePage: React.FC = () => {
+  return (
+    <div className="max-w-prose p-4">
+      <h1 className="mb-6 text-center text-2xl font-bold">ShopJot Example Application</h1>
+      <div className="flex flex-col gap-4">
+        <p>
+          This webshop called ShopJot is architected with a micro services architecture comprised
+          for two services:
+        </p>
+
+        <ul className="list-inside list-disc">
+          <li>
+            <strong>Accounts</strong>: service which takes care of registering accounts and address.
+          </li>
+          <li>
+            <strong>Orders</strong>: service which handles new orders and products attached to those
+            orders. An order is tied to an accounts, which is where the two service intersect.
+          </li>
+        </ul>
+
+        <p>
+          The accounts service exposes its accounts data through a "Public Schema" called "accounts"
+          to the order service. Our two sync services then take are of giving the order service a
+          consistent view of the accounts.
+        </p>
+
+        {/* Diagram Flow */}
+        <div className="flex flex-col">
+          <div className="my-10 flex items-center justify-center space-x-4">
+            <ServiceBox title="Accounts Service" />
+            <div className="flex flex-col items-center">
+              <span className="mb-1 text-xs">(Sync-A)</span>
+              <Arrow direction="right" />
+            </div>
+            <ServiceBox title="Event Store" />
+            <div className="flex flex-col items-center">
+              <span className="mb-1 text-xs">(Sync-B)</span>
+              <Arrow direction="right" />
+            </div>
+            <ServiceBox title="Order Service" />
+          </div>
+          <div className="text-center">
+            <i>Data flow</i>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;

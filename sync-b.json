@@ -1,0 +1,117 @@
+{
+  "slug": "sync-b",
+  "manifestVersion": 0,
+  "connections": [
+    {
+      "slug": "db-orders",
+      "config": {
+        "connectionType": "postgres",
+        "host": "db-orders",
+        "port": 5432,
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres"
+      }
+    },
+    {
+      "slug": "eventstore",
+      "config": {
+        "connectionType": "postgres",
+        "host": "eventstore",
+        "port": 5432,
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres"
+      }
+    }
+  ],
+  "dataStores": [
+    {
+      "connectionSlug": "db-orders",
+      "publicationName": "rejot_publication",
+      "slotName": "rejot_slot"
+    }
+  ],
+  "eventStores": [
+    {
+      "connectionSlug": "eventstore"
+    }
+  ],
+  "publicSchemas": [
+    {
+      "name": "orders",
+      "source": {
+        "dataStoreSlug": "db-orders",
+        "tables": ["orders"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "account_id": {
+            "type": "number"
+          },
+          "total_price": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "price_at_time_of_order": {
+                  "type": "number"
+                },
+                "quantity": {
+                  "type": "number"
+                }
+              },
+              "required": ["id", "name", "price_at_time_of_order", "quantity"],
+              "additionalProperties": false
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["id", "account_id", "total_price", "items", "created_at"],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "transformation": {
+        "transformationType": "postgresql",
+        "table": "orders",
+        "sql": "SELECT\n      orders.id,\n      orders.account_id,\n      orders.total_price,\n      orders.created_at,\n      COALESCE(json_agg(\n        json_build_object(\n          'id', order_items.id,\n          'name', products.name,\n          'price_at_time_of_order', order_items.price_at_time_of_order,\n          'quantity', order_items.quantity\n        )\n      ) FILTER (WHERE order_items.id IS NOT NULL), '[]'::json) as items\n    FROM\n      orders\n      LEFT JOIN order_items ON orders.id = order_items.order_id\n      LEFT JOIN products ON order_items.product_id = products.id\n    WHERE\n      orders.id = $1\n    GROUP BY\n      orders.id,\n      orders.account_id,\n      orders.total_price,\n      orders.created_at"
+      },
+      "version": {
+        "major": 1,
+        "minor": 0
+      }
+    }
+  ],
+  "consumerSchemas": [
+    {
+      "sourceManifestSlug": "sync-a",
+      "publicSchema": {
+        "name": "accounts",
+        "majorVersion": 2
+      },
+      "destinationDataStoreSlug": "db-orders",
+      "transformations": [
+        {
+          "transformationType": "postgresql",
+          "sql": "INSERT INTO destination_accounts (id, email) VALUES ($1, $2)"
+        }
+      ]
+    }
+  ]
+}

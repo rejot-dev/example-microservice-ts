@@ -1,0 +1,23 @@
+{
+  "name": "@example/shared",
+  "version": "0.0.1",
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "exports": {
+    "./accounts-api": "./src/accounts-api.ts",
+    "./addresses-api": "./src/addresses-api.ts",
+    "./db": "./src/db.ts",
+    "./errors": "./src/errors.ts",
+    "./orders-api": "./src/orders-api.ts"
+  },
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@types/pg": "^8.11.11",
+    "pg": "^8.12.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.24.2"
+  }
+}
