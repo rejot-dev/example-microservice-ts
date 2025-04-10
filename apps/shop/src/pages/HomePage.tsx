@@ -38,8 +38,8 @@ const HomePage: React.FC = () => {
       <h1 className="mb-6 text-center text-2xl font-bold">ShopJot Example Application</h1>
       <div className="flex flex-col gap-4">
         <p>
-          This webshop called ShopJot is architected with a micro services architecture comprised
-          for two services:
+          This webshop is architected with a micro services in order to demonstrate how ReJot can be
+          used as an inter-service communication tool.
         </p>
 
         <ul className="list-inside list-disc">

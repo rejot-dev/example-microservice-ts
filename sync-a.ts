@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 // TODO: we need to package our adapters and contracts
-import { createPostgresPublicSchemaTransformation } from "@rejot/adapter-postgres";
-import { createPublicSchema } from "@rejot/contract/public-schema";
+import { createPostgresPublicSchemaTransformation } from "@rejot-dev/adapter-postgres";
+import { createPublicSchema } from "@rejot-dev/contract/public-schema";
 
 const accountsPublicSchemaV1 = createPublicSchema("accounts", {
   source: { dataStoreSlug: "db-accounts", tables: ["accounts"] }, // "addresses"

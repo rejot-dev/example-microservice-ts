@@ -70,11 +70,7 @@ services:
       - 5173:5173
 
   sync-a-service: &sync-server
-    build: # ghcr.io/rejot-dev/rejot-cli:main
-      context: ../rejot/
-      dockerfile: Dockerfile
-      args:
-        REJOT_APP: rejot-cli
+    image: ghcr.io/rejot-dev/rejot-cli:v0.0.7
     depends_on:
       db-accounts:
         condition: service_healthy

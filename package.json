@@ -3,7 +3,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "pre-commit": "lefthook run pre-commit"
   },
   "engines": {
     "node": ">=22"
@@ -17,6 +18,7 @@
     "@eslint/js": "^9.20.0",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/eslint-plugin-tailwindcss": "^3.17.0",
+    "@rejot-dev/cli": "^0.0.7",
     "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-react": "^7.37.4",
@@ -26,9 +28,11 @@
     "prettier-plugin-sql": "^0.18.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.1"
+    "typescript-eslint": "^8.24.1",
+    "lefthook": "^1.11.7"
   },
   "dependencies": {
-    "lefthook": "^1.11.7"
+    "@rejot-dev/adapter-postgres": "^0.0.7",
+    "@rejot-dev/contract": "^0.0.7"
   }
 }

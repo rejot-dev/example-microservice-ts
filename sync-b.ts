@@ -1,9 +1,10 @@
-import { createPostgresConsumerSchemaTransformation } from "@rejot/adapter-postgres";
-import { createConsumerSchema } from "@rejot/contract/consumer-schema";
+import {
+  createPostgresPublicSchemaTransformation,
+  createPostgresConsumerSchemaTransformation,
+} from "@rejot-dev/adapter-postgres";
+import { createConsumerSchema } from "@rejot-dev/contract/consumer-schema";
+import { createPublicSchema } from "@rejot-dev/contract/public-schema";
 import { z } from "zod";
-
-import { createPostgresPublicSchemaTransformation } from "@rejot/adapter-postgres";
-import { createPublicSchema } from "@rejot/contract/public-schema";
 
 const accountsConsumerSchema = createConsumerSchema({
   sourceManifestSlug: "sync-a",
