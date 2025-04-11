@@ -1,7 +1,9 @@
 -- Destination Accounts table (synced from accounts service)
 CREATE TABLE destination_accounts (
   id BIGSERIAL PRIMARY KEY,
-  email VARCHAR(255) UNIQUE NOT NULL
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE
 );
 
 -- Orders tables

@@ -87,11 +87,13 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
-      "transformation": {
-        "transformationType": "postgresql",
-        "table": "orders",
-        "sql": "SELECT\n      orders.id,\n      orders.account_id,\n      orders.total_price,\n      orders.created_at,\n      COALESCE(json_agg(\n        json_build_object(\n          'id', order_items.id,\n          'name', products.name,\n          'price_at_time_of_order', order_items.price_at_time_of_order,\n          'quantity', order_items.quantity\n        )\n      ) FILTER (WHERE order_items.id IS NOT NULL), '[]'::json) as items\n    FROM\n      orders\n      LEFT JOIN order_items ON orders.id = order_items.order_id\n      LEFT JOIN products ON order_items.product_id = products.id\n    WHERE\n      orders.id = $1\n    GROUP BY\n      orders.id,\n      orders.account_id,\n      orders.total_price,\n      orders.created_at"
-      },
+      "transformations": [
+        {
+          "transformationType": "postgresql",
+          "table": "orders",
+          "sql": "SELECT\n      orders.id,\n      orders.account_id,\n      orders.total_price,\n      orders.created_at,\n      COALESCE(json_agg(\n        json_build_object(\n          'id', order_items.id,\n          'name', products.name,\n          'price_at_time_of_order', order_items.price_at_time_of_order,\n          'quantity', order_items.quantity\n        )\n      ) FILTER (WHERE order_items.id IS NOT NULL), '[]'::json) as items\n    FROM\n      orders\n      LEFT JOIN order_items ON orders.id = order_items.order_id\n      LEFT JOIN products ON order_items.product_id = products.id\n    WHERE\n      orders.id = $1\n    GROUP BY\n      orders.id,\n      orders.account_id,\n      orders.total_price,\n      orders.created_at"
+        }
+      ],
       "version": {
         "major": 1,
         "minor": 0
@@ -109,7 +111,7 @@
       "transformations": [
         {
           "transformationType": "postgresql",
-          "sql": "INSERT INTO destination_accounts (id, email) VALUES ($1, $2)"
+          "sql": "INSERT INTO destination_accounts (id, name, created_at) VALUES (:id, :name, :created_at) ON CONFLICT (id) DO UPDATE SET name = :name, created_at = :created_at"
         }
       ]
     }

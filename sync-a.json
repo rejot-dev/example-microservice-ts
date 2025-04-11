@@ -65,11 +65,13 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
-      "transformation": {
-        "transformationType": "postgresql",
-        "table": "accounts",
-        "sql": "SELECT id, email, name, created_at FROM accounts WHERE id = $1"
-      },
+      "transformations": [
+        {
+          "transformationType": "postgresql",
+          "table": "accounts",
+          "sql": "SELECT id, email, name, created_at FROM accounts WHERE id = $1"
+        }
+      ],
       "version": {
         "major": 1,
         "minor": 0
@@ -99,11 +101,13 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
-      "transformation": {
-        "transformationType": "postgresql",
-        "table": "accounts",
-        "sql": "SELECT id, name, created_at FROM accounts WHERE id = $1"
-      },
+      "transformations": [
+        {
+          "transformationType": "postgresql",
+          "table": "accounts",
+          "sql": "SELECT id, name, created_at FROM accounts WHERE id = $1"
+        }
+      ],
       "version": {
         "major": 2,
         "minor": 0

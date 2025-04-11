@@ -70,7 +70,7 @@ services:
       - 5173:5173
 
   sync-a-service: &sync-server
-    image: ghcr.io/rejot-dev/rejot-cli:v0.0.7
+    image: ghcr.io/rejot-dev/rejot-cli:v0.0.8
     depends_on:
       db-accounts:
         condition: service_healthy
@@ -81,7 +81,7 @@ services:
     volumes:
       - ./:/example
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:80/status | grep -q ready"]
+      test: ["CMD-SHELL", "curl -f http://localhost:80/status"]
       interval: 10s
       retries: 5
       start_period: 30s
