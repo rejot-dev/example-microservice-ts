@@ -79,8 +79,7 @@ Define which tables/columns the Accounts service should expose.
 This is handled through two `sync-a.ts` and `sync-b.ts` definition files, normally for a project this small a single sync service would be fine.
 
 ```bash
-bunx rejot-cli collect --write --manifest sync-a.json sync-a.ts
-bunx rejot-cli collect --write --manifest sync-b.json sync-b.ts
+bun collect
 ```
 
 ### 3. Start Sync Services
