@@ -38,7 +38,7 @@ const HomePage: React.FC = () => {
       <h1 className="mb-6 text-center text-2xl font-bold">ShopJot Example Application</h1>
       <div className="flex flex-col gap-4">
         <p>
-          This webshop is architected with a micro services in order to demonstrate how ReJot can be
+          This webshop is architected with microservices in order to demonstrate how ReJot can be
           used as an inter-service communication tool.
         </p>
 
@@ -55,7 +55,8 @@ const HomePage: React.FC = () => {
         <p>
           The accounts service exposes its accounts data through a "Public Schema" called "accounts"
           to the order service. Our two sync services then take are of giving the order service a
-          consistent view of the accounts.
+          consistent view of the accounts. Note that at this size a single sync service would have
+          been enough but for demonstration purposes we have split them up.
         </p>
 
         {/* Diagram Flow */}

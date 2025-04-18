@@ -28,10 +28,10 @@ To get the application running locally using Docker:
 1.  **Build and start all services:**
 
     ```bash
-    docker compose up --build -d
+    docker compose up -d
     ```
 
-    This command builds the necessary images (if they don't exist) and starts all services (databases, backend services, frontend shop, and sync services) in the background.
+    This command starts all services (databases, backend services, frontend shop, and sync services) in the background.
 
 2.  **Access the shop:**
     Once the services are up (which might take a minute for health checks to pass), you can access the ShopJot frontend at [http://localhost:5173](http://localhost:5173).
