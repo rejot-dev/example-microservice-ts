@@ -75,7 +75,8 @@
       "version": {
         "major": 1,
         "minor": 0
-      }
+      },
+      "definitionFile": "packages/sync-models/src/sync-a.ts"
     },
     {
       "name": "accounts",
@@ -111,7 +112,8 @@
       "version": {
         "major": 2,
         "minor": 0
-      }
+      },
+      "definitionFile": "packages/sync-models/src/sync-a.ts"
     }
   ],
   "consumerSchemas": []

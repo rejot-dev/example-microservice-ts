@@ -97,7 +97,8 @@
       "version": {
         "major": 1,
         "minor": 0
-      }
+      },
+      "definitionFile": "packages/sync-models/src/sync-b.ts"
     }
   ],
   "consumerSchemas": [
@@ -113,7 +114,8 @@
           "transformationType": "postgresql",
           "sql": "INSERT INTO destination_accounts (id, name, created_at) VALUES (:id, :name, :created_at) ON CONFLICT (id) DO UPDATE SET name = :name, created_at = :created_at"
         }
-      ]
+      ],
+      "definitionFile": "packages/sync-models/src/sync-b.ts"
     }
   ]
 }

@@ -8,8 +8,9 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@rejot-dev/adapter-postgres": "^0.0.9",
-    "@rejot-dev/contract": "^0.0.9"
+    "@rejot-dev/adapter-postgres": "^0.0.10",
+    "@rejot-dev/contract": "^0.0.10",
+    "@rejot-dev/contract-tools": "^0.0.10"
   },
   "exports": {
     "./sync-a": "./src/sync-a.ts",
