@@ -1,10 +1,10 @@
 import { NavLink, Outlet } from "react-router-dom";
-import SyncStatusSidebar from "./components/SyncStatusSidebar";
+import StatusSidebar from "./components/StatusSidebar";
 
 function App() {
   return (
     <div className="flex min-h-svh flex-row bg-gray-100">
-      <SyncStatusSidebar />
+      <StatusSidebar />
       <div className="flex flex-grow flex-col p-4">
         <nav className="mb-4 rounded bg-white p-4 shadow">
           <ul className="flex space-x-4">
