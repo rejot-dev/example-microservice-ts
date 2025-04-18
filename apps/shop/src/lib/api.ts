@@ -19,6 +19,8 @@ import {
   CreateOrderResponseSchema,
   CreateProductResponseSchema,
   GetOrderResponseSchema,
+  GetDestinationAccountResponse,
+  GetDestinationAccountResponseSchema,
 } from "@example/shared/orders-api";
 import { z } from "zod";
 
@@ -131,6 +133,14 @@ type GetOrdersResponse = z.infer<typeof GetOrdersResponseSchema>;
 export const getOrders = (): Promise<GetOrdersResponse> =>
   apiFetch(ORDERS_SERVICE_URL, "/orders", "GET", GetOrdersResponseSchema);
 
+export const getDestinationAccounts = (): Promise<GetDestinationAccountResponse[]> =>
+  apiFetch(
+    ORDERS_SERVICE_URL,
+    "/destination_accounts",
+    "GET",
+    GetDestinationAccountResponseSchema.array(),
+  );
+
 export const createOrder = (data: CreateOrderRequest): Promise<CreateOrderResponse> =>
   apiFetch(
     ORDERS_SERVICE_URL,
@@ -152,6 +162,5 @@ export type {
   GetOrderResponse,
   GetOrdersResponse,
   CreateOrderRequest,
-  GetDestinationAccountResponse as SyncedAccountResponse, // Renaming for clarity
-  GetSyncedAccountsResponse,
+  GetDestinationAccountResponse,
 };

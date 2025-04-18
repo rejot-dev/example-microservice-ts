@@ -65,7 +65,9 @@ export type GetProductResponse = z.infer<typeof GetProductResponseSchema>;
 /* Get Account */
 export const GetDestinationAccountResponseSchema = z.object({
   id: z.string(),
-  email: z.string(),
+  name: z.string(),
+  created_at: z.coerce.date(),
+  synced_at: z.coerce.date(),
 });
 
 export type GetDestinationAccountResponse = z.infer<typeof GetDestinationAccountResponseSchema>;

@@ -23,7 +23,7 @@ export interface IRepo {
   getProducts(): Promise<GetProductResponse[]>;
 
   // Account methods
-  getAccounts(): Promise<GetDestinationAccountResponse[]>;
+  getDestinationAccounts(): Promise<GetDestinationAccountResponse[]>;
 }
 
 export class PostgresRepo implements IRepo {
@@ -160,8 +160,11 @@ export class PostgresRepo implements IRepo {
   }
 
   // Account methods
-  async getAccounts(): Promise<GetDestinationAccountResponse[]> {
-    const result = await this.client.query("SELECT * FROM destination_accounts");
+  async getDestinationAccounts(): Promise<GetDestinationAccountResponse[]> {
+    const result = await this.client.query(
+      "SELECT id, name, created_at, synced_at FROM destination_accounts",
+    );
+
     return result.rows;
   }
 }

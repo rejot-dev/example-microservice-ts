@@ -3,7 +3,8 @@ CREATE TABLE destination_accounts (
   id BIGSERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE
+  created_at TIMESTAMP WITH TIME ZONE,
+  synced_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Orders tables
@@ -30,6 +31,5 @@ CREATE TABLE order_items (
   quantity INT NOT NULL DEFAULT 1,
   price_at_time_of_order BIGINT NOT NULL, -- Store price paid in cents or smallest unit
   FOREIGN KEY (order_id) REFERENCES orders (id),
-  FOREIGN KEY (product_id) REFERENCES products (id),
-  UNIQUE (order_id, product_id) -- Prevent duplicate products in the same order
+  FOREIGN KEY (product_id) REFERENCES products (id)
 );

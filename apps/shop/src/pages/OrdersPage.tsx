@@ -4,11 +4,11 @@ import {
   getOrders,
   createOrder,
   getProducts, // Need products for the form
-  getAccounts, // Use regular accounts
+  getDestinationAccounts,
   CreateOrderRequest,
   GetOrderResponse,
   GetProductResponse,
-  GetAccountResponse, // Use regular account response type
+  GetDestinationAccountResponse,
 } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -57,13 +57,12 @@ const OrdersPage: React.FC = () => {
 
   // Fetch accounts for the order form dropdown
   const {
-    data: accounts, // Renamed from syncedAccounts
-    isLoading: isLoadingAccountsData, // Renamed from isLoadingAccounts
-    error: accountsDataError, // Renamed from accountsError
-  } = useQuery<GetAccountResponse[], Error>({
-    // Changed type from SyncedAccountResponse[]
-    queryKey: ["accounts"], // Changed queryKey from ["syncedAccounts"]
-    queryFn: getAccounts, // Changed queryFn from getSyncedAccounts
+    data: destinationAccounts,
+    isLoading: isLoadingAccountsData,
+    error: accountsDataError,
+  } = useQuery<GetDestinationAccountResponse[], Error>({
+    queryKey: ["destinationAccounts"],
+    queryFn: getDestinationAccounts,
   });
 
   // Mutation for creating an order
@@ -142,7 +141,7 @@ const OrdersPage: React.FC = () => {
             <p className="text-red-500">Error loading accounts: {accountsDataError.message}</p>
           )}
 
-          {products && accounts && (
+          {products && destinationAccounts && (
             <form onSubmit={handleCreateOrder} className="space-y-4">
               {/* Account Selection */}
               <Select
@@ -155,9 +154,10 @@ const OrdersPage: React.FC = () => {
                   <SelectValue placeholder="Select Account" />
                 </SelectTrigger>
                 <SelectContent>
-                  {accounts.map((account) => (
+                  {destinationAccounts?.map((account: GetDestinationAccountResponse) => (
                     <SelectItem key={account.id} value={String(account.id)}>
-                      {account.name} (ID: {account.id})
+                      {account.name} (id: {account.id}, synced_at:{" "}
+                      {account.synced_at.toLocaleString()})
                     </SelectItem>
                   ))}
                 </SelectContent>

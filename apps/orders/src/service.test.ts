@@ -93,7 +93,7 @@ class TestRepo implements IRepo {
     return Object.values(this.products);
   }
 
-  async getAccounts(): Promise<GetDestinationAccountResponse[]> {
+  async getDestinationAccounts(): Promise<GetDestinationAccountResponse[]> {
     return [];
   }
 

@@ -57,6 +57,14 @@ export class OrdersService {
             return Response.json(products);
           },
         },
+
+        // Destination Accounts endpoint
+        "/destination_accounts": {
+          GET: async () => {
+            const destinationAccounts = await this.repo.getDestinationAccounts();
+            return Response.json(destinationAccounts);
+          },
+        },
       },
       error: errorToResponse,
     });
