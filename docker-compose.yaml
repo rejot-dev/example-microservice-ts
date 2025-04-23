@@ -29,7 +29,7 @@ services:
     ports:
       - 5436:5432
 
-  eventstore:
+  db-eventstore:
     <<: *postgres
     volumes:
       - eventstore-data:/var/lib/postgresql/data
@@ -75,12 +75,11 @@ services:
       - 5173:5173
 
   rejot-sync:
-    image: ghcr.io/rejot-dev/rejot-cli
+    image: ghcr.io/rejot-dev/rejot-cli:v0.0.10
     depends_on:
       - accounts
       - orders
-      - eventstore
-    entrypoint: ["bash", "-c", "while true; do sleep 100; done"]
+      - db-eventstore
+    command: ["manifest", "sync", "--log-level", "trace", "/example/rejot-manifest.json"]
     volumes:
       - ./:/example
-    working_dir: /example

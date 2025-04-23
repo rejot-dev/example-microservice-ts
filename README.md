@@ -25,21 +25,30 @@ See the [`docker-compose.yaml`](./docker-compose.yaml) file for details on how a
 
 To get the application running locally using Docker:
 
-1.  **Build and start all services:**
+1. **Install dependencies:**
 
-    ```bash
-    docker compose up -d
-    ```
+   ```bash
+   bun install
+   ```
 
-    This command starts all services (databases, backend services, frontend shop, and sync services) in the background.
+   The docker compose file uses this entire directory as the working directory for the rejot-sync service. As a result, you need to install dependencies before starting the services.
 
-2.  **Access the shop:**
-    Once the services are up (which might take a minute for health checks to pass), you can access the ShopJot frontend at [http://localhost:5173](http://localhost:5173).
+2. **Build and start all services:**
 
-3.  **Stop the services:**
-    ```bash
-    docker compose down
-    ```
+   ```bash
+   docker compose up -d
+   ```
+
+   This command starts all services (databases, backend services, frontend shop, and sync services) in the background.
+
+3. **Access the shop:**
+   Once the services are up (which might take a minute for health checks to pass), you can access the ShopJot frontend at [http://localhost:5173](http://localhost:5173).
+
+4. **Stop the services:**
+
+   ```bash
+   docker compose down
+   ```
 
 ## Debugging
 
@@ -50,7 +59,7 @@ You can connect to the PostgreSQL databases running in Docker using `psql`.
 For example, you can connect to the Event Store:
 
 ```bash
-docker compose exec eventstore psql -U postgres -d postgres
+docker compose exec db-eventstore psql -U postgres -d postgres
 ```
 
 Inside `psql`, you can inspect ReJot tables, e.g.:

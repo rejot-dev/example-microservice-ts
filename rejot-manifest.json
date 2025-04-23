@@ -6,8 +6,8 @@
       "slug": "accounts",
       "config": {
         "connectionType": "postgres",
-        "host": "localhost",
-        "port": 5435,
+        "host": "db-accounts",
+        "port": 5432,
         "user": "postgres",
         "password": "postgres",
         "database": "postgres"
@@ -17,8 +17,8 @@
       "slug": "orders",
       "config": {
         "connectionType": "postgres",
-        "host": "localhost",
-        "port": 5436,
+        "host": "db-orders",
+        "port": 5432,
         "user": "postgres",
         "password": "postgres",
         "database": "postgres"
@@ -28,8 +28,8 @@
       "slug": "eventstore",
       "config": {
         "connectionType": "postgres",
-        "host": "localhost",
-        "port": 5437,
+        "host": "db-eventstore",
+        "port": 5432,
         "user": "postgres",
         "password": "postgres",
         "database": "postgres"
