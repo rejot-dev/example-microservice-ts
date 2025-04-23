@@ -43,7 +43,9 @@
         "connectionType": "postgres",
         "publicationName": "rejot_publication",
         "slotName": "rejot_slot"
-      }
+      },
+      "publicationName": "rejot_publication",
+      "slotName": "rejot_slot"
     },
     {
       "connectionSlug": "orders",
@@ -51,7 +53,9 @@
         "connectionType": "postgres",
         "publicationName": "rejot_publication",
         "slotName": "rejot_slot"
-      }
+      },
+      "publicationName": "rejot_publication",
+      "slotName": "rejot_slot"
     }
   ],
   "eventStores": [
