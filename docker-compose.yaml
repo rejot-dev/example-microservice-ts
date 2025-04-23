@@ -18,19 +18,24 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
     command: ["-c", "config_file=/postgresql.conf"]
+    ports:
+      - 5435:5432
 
   db-orders:
     <<: *postgres
     volumes:
       - orders-data:/var/lib/postgresql/data
       - ./postgres.conf:/postgresql.conf
+    ports:
+      - 5436:5432
 
   eventstore:
     <<: *postgres
     volumes:
       - eventstore-data:/var/lib/postgresql/data
       - ./postgres.conf:/postgresql.conf
-
+    ports:
+      - 5437:5432
   accounts:
     image: oven/bun:1.2.6
     volumes:
@@ -68,3 +73,14 @@ services:
       - orders
     ports:
       - 5173:5173
+
+  rejot-sync:
+    image: ghcr.io/rejot-dev/rejot-cli
+    depends_on:
+      - accounts
+      - orders
+      - eventstore
+    entrypoint: ["bash", "-c", "while true; do sleep 100; done"]
+    volumes:
+      - ./:/example
+    working_dir: /example
