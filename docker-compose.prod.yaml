@@ -1,0 +1,4 @@
+services:
+  shop:
+    ports:
+      - 80:5173
