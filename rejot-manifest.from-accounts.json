@@ -27,7 +27,12 @@
   ],
   "dataStores": [
     {
-      "connectionSlug": "accounts"
+      "connectionSlug": "accounts",
+      "config": {
+        "connectionType": "postgres",
+        "publicationName": "rejot_publication",
+        "slotName": "rejot_slot"
+      }
     }
   ],
   "eventStores": [

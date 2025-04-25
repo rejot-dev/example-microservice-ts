@@ -27,7 +27,12 @@
   ],
   "dataStores": [
     {
-      "connectionSlug": "orders"
+      "connectionSlug": "orders",
+      "config": {
+        "connectionType": "postgres",
+        "publicationName": "rejot_publication",
+        "slotName": "rejot_slot"
+      }
     }
   ],
   "eventStores": [
@@ -37,6 +42,7 @@
   ],
   "consumerSchemas": [
     {
+      "name": "orders-schema",
       "sourceManifestSlug": "from-accounts",
       "publicSchema": {
         "name": "accounts-schema",
