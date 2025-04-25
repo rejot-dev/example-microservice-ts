@@ -1,0 +1,56 @@
+{
+  "slug": "to-orders",
+  "manifestVersion": 0,
+  "connections": [
+    {
+      "slug": "orders",
+      "config": {
+        "connectionType": "postgres",
+        "host": "db-orders",
+        "port": 5432,
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres"
+      }
+    },
+    {
+      "slug": "eventstore",
+      "config": {
+        "connectionType": "postgres",
+        "host": "db-eventstore",
+        "port": 5432,
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres"
+      }
+    }
+  ],
+  "dataStores": [
+    {
+      "connectionSlug": "orders"
+    }
+  ],
+  "eventStores": [
+    {
+      "connectionSlug": "eventstore"
+    }
+  ],
+  "consumerSchemas": [
+    {
+      "sourceManifestSlug": "from-accounts",
+      "publicSchema": {
+        "name": "accounts-schema",
+        "majorVersion": 1
+      },
+      "destinationDataStoreSlug": "orders",
+      "transformations": [
+        {
+          "transformationType": "postgresql",
+          "sql": "INSERT INTO destination_accounts (id, name) VALUES (:id, :name) ON CONFLICT (id) DO UPDATE SET name = :name"
+        }
+      ],
+      "definitionFile": "packages/sync-models/src/order-schema.ts"
+    }
+  ],
+  "publicSchemas": []
+}

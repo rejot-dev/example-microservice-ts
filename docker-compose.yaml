@@ -36,6 +36,14 @@ services:
       - ./postgres.conf:/postgresql.conf
     ports:
       - 5437:5432
+
+  bun-init:
+    image: oven/bun:1.2.6
+    volumes:
+      - ./:/example
+    working_dir: /example
+    command: ["bun", "install"]
+
   accounts:
     image: oven/bun:1.2.6
     volumes:
@@ -74,12 +82,39 @@ services:
     ports:
       - 5173:5173
 
-  rejot-sync:
-    image: ghcr.io/rejot-dev/rejot-cli:v0.0.10
+  rejot-sync-from-accounts: &rejot-sync-from-accounts
+    image: ghcr.io/rejot-dev/rejot-cli:v0.0.14
     depends_on:
       - accounts
       - orders
       - db-eventstore
-    command: ["manifest", "sync", "--log-level", "trace", "/example/rejot-manifest.json"]
+    command:
+      [
+        "manifest",
+        "sync",
+        "--log-level",
+        "trace",
+        "/example/rejot-manifest.from-accounts.json",
+        "--hostname",
+        "0.0.0.0",
+        "--api-port",
+        "80",
+      ]
     volumes:
       - ./:/example
+
+  rejot-sync-to-orders:
+    <<: *rejot-sync-from-accounts
+    command:
+      [
+        "manifest",
+        "sync",
+        "--log-level",
+        "trace",
+        "/example/rejot-manifest.to-orders.json",
+        "/example/rejot-manifest.from-accounts.json",
+        "--hostname",
+        "0.0.0.0",
+        "--api-port",
+        "80",
+      ]

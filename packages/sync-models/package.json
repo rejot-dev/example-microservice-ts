@@ -13,7 +13,7 @@
     "@rejot-dev/contract-tools": "^0.0.10"
   },
   "exports": {
-    "./sync-a": "./src/sync-a.ts",
-    "./sync-b": "./src/sync-b.ts"
+    "./account-schema": "./src/account-schema.ts",
+    "./order-schema": "./src/order-schema.ts"
   }
 }

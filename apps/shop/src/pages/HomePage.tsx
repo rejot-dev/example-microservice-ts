@@ -64,12 +64,12 @@ const HomePage: React.FC = () => {
           <div className="my-10 flex items-center justify-center space-x-4">
             <ServiceBox title="Accounts Service" />
             <div className="flex flex-col items-center">
-              <span className="mb-1 text-xs">(Sync-A)</span>
+              <span className="mb-1 text-xs">(ReJot Sync From Accounts)</span>
               <Arrow direction="right" />
             </div>
             <ServiceBox title="Event Store" />
             <div className="flex flex-col items-center">
-              <span className="mb-1 text-xs">(Sync-B)</span>
+              <span className="mb-1 text-xs">(ReJot Sync To Orders)</span>
               <Arrow direction="right" />
             </div>
             <ServiceBox title="Order Service" />

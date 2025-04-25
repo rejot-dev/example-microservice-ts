@@ -12,12 +12,12 @@ ShopJot consists of two main microservices:
 Data synchronization between these services is managed by ReJot:
 
 1.  The Accounts service makes its data available via a ReJot "Public Schema".
-2.  **Sync Service A** (`sync-a-service`) reads changes from the Accounts database (`db-accounts`) and writes them as events to the **Event Store** (`eventstore`).
-3.  **Sync Service B** (`sync-b-service`) reads events from the Event Store and applies the relevant changes to the Orders database (`db-orders`), ensuring the Orders service has a consistent view of account data.
+2.  **ReJot Sync From Accounts** (`rejot-sync-from-accounts`) reads changes from the Accounts database (`db-accounts`) and writes them as events to the **Event Store** (`eventstore`).
+3.  **ReJot Sync To Orders** (`rejot-sync-to-orders`) reads events from the Event Store and applies the relevant changes to the Orders database (`db-orders`), ensuring the Orders service has a consistent view of account data.
 
 This data flow looks like this:
 
-`Accounts Service` → `(Sync-A)` → `Event Store` → `(Sync-B)` → `Orders Service`
+`Accounts Service` → `(ReJot Sync From Accounts)` → `Event Store` → `(ReJot Sync To Orders)` → `Orders Service`
 
 See the [`docker-compose.yaml`](./docker-compose.yaml) file for details on how all these services are deployed.
 
@@ -88,3 +88,26 @@ To reset all databases and Docker volumes to a clean slate:
 ```
 
 This script stops containers, removes volumes, and cleans up ReJot state files.
+
+## How this repository was created
+
+1. Define the schemas for the public and consumer schemas.
+   See [`packages/sync-models/src/account-schema.ts`](./packages/sync-models/src/account-schema.ts) and [`packages/sync-models/src/order-schema.ts`](./packages/sync-models/src/order-schema.ts).
+2. Run `rejot-cli collect packages/sync-models/src/account-schema.ts --manifest rejot-manifest.from-accounts.json --write` to create the manifest for the public schema.
+3. Run `rejot-cli collect packages/sync-models/src/order-schema.ts --manifest rejot-manifest.to-orders.json --write` to create the manifest for the consumer schema.
+4. Create a new secret manifest file: `rejot-cli manifest init --slug manifest-secret`.
+5. Add database and eventstore connections to the secret manifest file.
+
+```bash
+rejot-cli manifest connection add \
+        --slug "my-datastore" \
+        --type postgres \
+        --database postgres \
+        --host localhost \
+        --password example \
+        --port 5432 \
+        --user postgres
+```
+
+6. Run `rejot-cli manifest sync --log-level trace /rejot-manifest.from-accounts.json secret-manifest.json` to synchronize the public schema.
+7. Run `rejot-cli manifest sync --log-level trace /rejot-manifest.to-orders.json secret-manifest.json` to synchronize the consumer schema.
