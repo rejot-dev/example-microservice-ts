@@ -1,8 +1,0 @@
-{
-  "json.schemas": [
-    {
-      "fileMatch": ["rejot-manifest.json"],
-      "url": "..//rejot/packages/contract/schema.json"
-    }
-  ]
-}

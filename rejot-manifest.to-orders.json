@@ -1,6 +1,7 @@
 {
   "slug": "to-orders",
   "manifestVersion": 0,
+  "$schema": "https://unpkg.com/@rejot-dev/contract@0.0.15/schema.json",
   "connections": [
     {
       "slug": "orders",

@@ -12,7 +12,7 @@ const EventsList: React.FC = () => {
   } = useQuery<GetEventResponse[], Error>({
     queryKey: ["events"],
     queryFn: getEvents,
-    refetchInterval: 10000, // Refresh every 10 seconds
+    refetchInterval: 5000, // Refresh every 5 seconds
   });
 
   if (isLoading) {
