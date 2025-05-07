@@ -41,6 +41,8 @@ To get the application running locally using Docker:
 
    This command starts all services (databases, backend services, frontend shop, and sync services) in the background.
 
+   To use production ports, run `docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d`.
+
 3. **Access the shop:**
    Once the services are up (which might take a minute for health checks to pass), you can access the ShopJot frontend at [http://localhost:5173](http://localhost:5173).
 
@@ -109,5 +111,5 @@ rejot-cli manifest connection add \
         --user postgres
 ```
 
-6. Run `rejot-cli manifest sync --log-level trace /rejot-manifest.from-accounts.json secret-manifest.json` to synchronize the public schema.
-7. Run `rejot-cli manifest sync --log-level trace /rejot-manifest.to-orders.json secret-manifest.json` to synchronize the consumer schema.
+6. Run `rejot-cli manifest sync --log-level trace rejot-manifest.from-accounts.json secret-manifest.json` to synchronize the public schema.
+7. Run `rejot-cli manifest sync --log-level trace rejot-manifest.to-orders.json secret-manifest.json` to synchronize the consumer schema.
