@@ -1,5 +1,4 @@
 import React from "react";
-import EventsList from "../components/EventsList";
 
 const ServiceBox: React.FC<{ title: string; children?: React.ReactNode }> = ({
   title,
@@ -87,13 +86,6 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Events List */}
-      <div className="w-full px-4">
-        <h2 className="mb-4 text-xl font-semibold">Recent Events</h2>
-        <h4 className="mb-4 text-sm">Note: Refreshes every 10 seconds</h4>
-        <EventsList />
       </div>
     </div>
   );

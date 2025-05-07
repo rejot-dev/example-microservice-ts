@@ -12,6 +12,7 @@ export default defineConfig({
     },
   },
   server: {
+    allowedHosts: ["localhost", "example.rejot.dev"],
     proxy: {
       "/api/accounts": {
         target: "http://accounts:3000",
