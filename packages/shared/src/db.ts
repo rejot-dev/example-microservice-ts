@@ -8,6 +8,12 @@ export function getClient(): Client {
   });
 }
 
+export function getEventStoreClient(): Client {
+  return new Client({
+    connectionString: process.env["EVENTSTORE_DATABASE_URL"],
+  });
+}
+
 async function getMigrations(path: string): Promise<string[]> {
   const migrations = await readdir(path);
   return migrations.sort().filter((migration) => migration.endsWith(".sql"));

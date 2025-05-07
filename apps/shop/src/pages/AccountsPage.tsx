@@ -95,7 +95,6 @@ const AccountsPage: React.FC = () => {
                   <TableRow>
                     <TableHead>ID</TableHead>
                     <TableHead>Name</TableHead>
-                    {/* Add email if available in GetAccountResponse */}
                   </TableRow>
                 </TableHeader>
                 <TableBody>

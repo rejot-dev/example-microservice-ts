@@ -1,6 +1,10 @@
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from "bun:test";
 import { AccountsService } from "./service";
-import type { CreateAccountResponse, GetAccountResponse } from "@example/shared/accounts-api";
+import type {
+  CreateAccountResponse,
+  GetAccountResponse,
+  GetEventResponse,
+} from "@example/shared/accounts-api";
 import type { IRepo } from "./repo";
 import type { CreateAccountRequest } from "@example/shared/accounts-api";
 import type { GetAddressResponse } from "@example/shared/addresses-api";
@@ -15,6 +19,7 @@ class TestRepo implements IRepo {
   private nextAddressId = 1;
   accounts: Record<string, GetAccountResponse> = {};
   addresses: Record<string, GetAddressResponse> = {};
+  events: GetEventResponse[] = [];
 
   async createAccount(account: CreateAccountRequest): Promise<CreateAccountResponse> {
     const id = this.nextAccountId.toString();
@@ -24,6 +29,22 @@ class TestRepo implements IRepo {
       id,
       name: account.name,
     };
+
+    // Add an event for account creation
+    this.events.unshift({
+      transaction_id: `tx-${this.events.length + 1}`,
+      operation_idx: 0,
+      operation: "INSERT",
+      public_schema_name: "accounts",
+      public_schema_major_version: 1,
+      public_schema_minor_version: 0,
+      object: {
+        id,
+        name: account.name,
+      },
+      created_at: new Date().toISOString(),
+      manifest_slug: "accounts",
+    });
 
     return { id };
   }
@@ -50,6 +71,22 @@ class TestRepo implements IRepo {
       country: address.country,
     };
 
+    // Add an event for address creation
+    this.events.unshift({
+      transaction_id: `tx-${this.events.length + 1}`,
+      operation_idx: 0,
+      operation: "INSERT",
+      public_schema_name: "addresses",
+      public_schema_major_version: 1,
+      public_schema_minor_version: 0,
+      object: {
+        id,
+        name: `${address.street_address}, ${address.city}`,
+      },
+      created_at: new Date().toISOString(),
+      manifest_slug: "addresses",
+    });
+
     return { id };
   }
 
@@ -65,11 +102,16 @@ class TestRepo implements IRepo {
     return Object.values(this.accounts);
   }
 
+  async getEvents(): Promise<GetEventResponse[]> {
+    return this.events;
+  }
+
   reset(): void {
     this.nextAccountId = 1;
     this.nextAddressId = 1;
     this.accounts = {};
     this.addresses = {};
+    this.events = [];
   }
 }
 
@@ -187,5 +229,36 @@ describe("AccountsService", () => {
   test("get non-existent address returns 404", async () => {
     const response = await fetch(`http://localhost:${TEST_PORT}/addresses/999`);
     expect(response.status).toBe(404);
+  });
+
+  test("get events returns list of events", async () => {
+    // Create an account
+    const accountResponse = await fetch(`http://localhost:${TEST_PORT}/accounts`, {
+      method: "POST",
+      body: JSON.stringify({ email: "test@example.com", name: "Test User" }),
+    });
+    const { id: accountId } = (await accountResponse.json()) as CreateAccountResponse;
+
+    // Create an address
+    await fetch(`http://localhost:${TEST_PORT}/addresses`, {
+      method: "POST",
+      body: JSON.stringify({
+        account_id: parseInt(accountId),
+        street_address: "123 Test St",
+        city: "Test City",
+        state: "TS",
+        postal_code: "12345",
+        country: "Test Country",
+      }),
+    });
+
+    // Get events
+    const eventsResponse = await fetch(`http://localhost:${TEST_PORT}/events`);
+    expect(eventsResponse.status).toBe(200);
+    const events = (await eventsResponse.json()) as GetEventResponse[];
+
+    expect(events).toHaveLength(2);
+    expect(events[0].public_schema_name).toBe("addresses");
+    expect(events[1].public_schema_name).toBe("accounts");
   });
 });

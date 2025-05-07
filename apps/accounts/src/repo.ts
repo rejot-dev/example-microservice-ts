@@ -2,6 +2,7 @@ import type {
   CreateAccountRequest,
   CreateAccountResponse,
   GetAccountResponse,
+  GetEventResponse,
 } from "@example/shared/accounts-api";
 import type {
   CreateAddressRequest,
@@ -17,10 +18,14 @@ export interface IRepo {
   createAddress(address: CreateAddressRequest): Promise<CreateAddressResponse>;
   getAddress(id: string): Promise<GetAddressResponse>;
   getAccounts(): Promise<GetAccountResponse[]>;
+  getEvents(): Promise<GetEventResponse[]>;
 }
 
 export class PostgresRepo implements IRepo {
-  constructor(private client: Client) {}
+  constructor(
+    private client: Client,
+    private eventStoreClient: Client,
+  ) {}
 
   async createAccount(account: CreateAccountRequest): Promise<CreateAccountResponse> {
     const result = await this.client.query(
@@ -65,6 +70,13 @@ export class PostgresRepo implements IRepo {
 
   async getAccounts(): Promise<GetAccountResponse[]> {
     const result = await this.client.query("SELECT * FROM accounts");
+    return result.rows;
+  }
+
+  async getEvents(): Promise<GetEventResponse[]> {
+    const result = await this.eventStoreClient.query(
+      "SELECT * FROM rejot_events.events ORDER BY created_at DESC LIMIT 100",
+    );
     return result.rows;
   }
 }

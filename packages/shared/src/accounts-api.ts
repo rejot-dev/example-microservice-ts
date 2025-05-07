@@ -25,3 +25,21 @@ export const GetAccountResponseSchema = z.object({
 
 export type GetAccountResponse = z.infer<typeof GetAccountResponseSchema>;
 export type GetAccountRequest = z.infer<typeof GetAccountRequestSchema>;
+
+/* Get Events */
+export const GetEventResponseSchema = z.object({
+  transaction_id: z.string(),
+  operation_idx: z.number(),
+  operation: z.string(),
+  public_schema_name: z.string(),
+  public_schema_major_version: z.number(),
+  public_schema_minor_version: z.number(),
+  object: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
+  created_at: z.string(),
+  manifest_slug: z.string(),
+});
+
+export type GetEventResponse = z.infer<typeof GetEventResponseSchema>;

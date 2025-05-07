@@ -19,6 +19,12 @@ export class AccountsService {
         "/status": {
           GET: () => Response.json({ status: "OK" }),
         },
+        "/events": {
+          GET: async () => {
+            const events = await this.repo.getEvents();
+            return Response.json(events);
+          },
+        },
         "/accounts/:id": {
           GET: async (req) => {
             const account = await this.repo.getAccount(req.params.id);

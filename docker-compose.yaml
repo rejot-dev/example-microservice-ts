@@ -54,6 +54,7 @@ services:
         restart: true
     environment:
       DATABASE_URL: "postgres://postgres:postgres@db-accounts:5432/postgres"
+      EVENTSTORE_DATABASE_URL: "postgres://postgres:postgres@db-eventstore:5432/postgres"
     working_dir: /example/apps/accounts
     command: ["bun", "run", "dev"]
 
@@ -67,6 +68,7 @@ services:
         restart: true
     environment:
       DATABASE_URL: "postgres://postgres:postgres@db-orders:5432/postgres"
+      EVENTSTORE_DATABASE_URL: "postgres://postgres:postgres@db-eventstore:5432/postgres"
     working_dir: /example/apps/orders
     command: ["bun", "run", "dev"]
 

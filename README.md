@@ -6,7 +6,7 @@ This repository contains a demo webshop application called ShopJot, built using 
 
 ShopJot consists of two main microservices:
 
-- **Accounts Service**: Manages user account registration and address details.
+- **Accounts Service**: Manages user account registration details.
 - **Orders Service**: Handles product information and new orders. Orders are linked to accounts, creating a dependency between the two services.
 
 Data synchronization between these services is managed by ReJot:
