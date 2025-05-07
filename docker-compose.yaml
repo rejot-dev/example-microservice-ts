@@ -83,7 +83,7 @@ services:
       - 5173:5173
 
   rejot-sync-from-accounts: &rejot-sync-from-accounts
-    image: ghcr.io/rejot-dev/rejot-cli:v0.0.14
+    image: ghcr.io/rejot-dev/rejot-cli:v0.0.15
     depends_on:
       - accounts
       - orders

@@ -30,8 +30,8 @@
       "connectionSlug": "orders",
       "config": {
         "connectionType": "postgres",
-        "publicationName": "rejot_publication",
-        "slotName": "rejot_slot"
+        "slotName": "rejot_slot",
+        "publicationName": "rejot_publication"
       }
     }
   ],
@@ -40,6 +40,7 @@
       "connectionSlug": "eventstore"
     }
   ],
+  "publicSchemas": [],
   "consumerSchemas": [
     {
       "name": "orders-schema",
@@ -48,15 +49,13 @@
         "name": "accounts-schema",
         "majorVersion": 1
       },
-      "destinationDataStoreSlug": "orders",
-      "transformations": [
-        {
-          "transformationType": "postgresql",
-          "sql": "INSERT INTO destination_accounts (id, name) VALUES (:id, :name) ON CONFLICT (id) DO UPDATE SET name = :name"
-        }
-      ],
-      "definitionFile": "packages/sync-models/src/order-schema.ts"
+      "definitionFile": "packages/sync-models/src/order-schema.ts",
+      "config": {
+        "consumerSchemaType": "postgres",
+        "destinationDataStoreSlug": "orders",
+        "sql": "INSERT INTO destination_accounts\n        (id, name)\n      VALUES\n        (:id, :name)\n      ON CONFLICT (id) DO UPDATE\n        SET name = :name\n      ;\n    ",
+        "deleteSql": "DELETE FROM destination_accounts WHERE id = :id"
+      }
     }
-  ],
-  "publicSchemas": []
+  ]
 }

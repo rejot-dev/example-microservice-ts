@@ -30,8 +30,8 @@
       "connectionSlug": "accounts",
       "config": {
         "connectionType": "postgres",
-        "publicationName": "rejot_publication",
-        "slotName": "rejot_slot"
+        "slotName": "rejot_slot",
+        "publicationName": "rejot_publication"
       }
     }
   ],
@@ -44,33 +44,43 @@
     {
       "name": "accounts-schema",
       "source": {
-        "dataStoreSlug": "accounts",
-        "tables": ["accounts"]
+        "dataStoreSlug": "accounts"
       },
       "outputSchema": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "number"
           },
           "name": {
             "type": "string"
+          },
+          "email": {
+            "type": "string"
           }
         },
-        "required": ["id", "name"],
+        "required": ["id", "name", "email"],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
-      "transformations": [
-        {
-          "transformationType": "postgresql",
-          "table": "accounts",
-          "sql": "SELECT id, name FROM accounts WHERE id = $1"
-        }
-      ],
       "version": {
         "major": 1,
         "minor": 0
+      },
+      "config": {
+        "publicSchemaType": "postgres",
+        "transformations": [
+          {
+            "operation": "insert",
+            "table": "accounts",
+            "sql": "SELECT a.id, a.name as \"name\", a.email as \"email\"\n         FROM accounts a\n         WHERE a.id = :id"
+          },
+          {
+            "operation": "update",
+            "table": "accounts",
+            "sql": "SELECT a.id, a.name as \"name\", a.email as \"email\"\n         FROM accounts a\n         WHERE a.id = :id"
+          }
+        ]
       },
       "definitionFile": "packages/sync-models/src/account-schema.ts"
     }

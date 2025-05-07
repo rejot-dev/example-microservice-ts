@@ -8,9 +8,9 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@rejot-dev/adapter-postgres": "^0.0.10",
-    "@rejot-dev/contract": "^0.0.10",
-    "@rejot-dev/contract-tools": "^0.0.10"
+    "@rejot-dev/adapter-postgres": "^0.0.15",
+    "@rejot-dev/contract": "^0.0.15",
+    "@rejot-dev/contract-tools": "^0.0.15"
   },
   "exports": {
     "./account-schema": "./src/account-schema.ts",

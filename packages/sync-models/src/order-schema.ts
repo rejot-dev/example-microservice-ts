@@ -1,7 +1,7 @@
-import { createPostgresConsumerSchemaTransformation } from "@rejot-dev/adapter-postgres";
+import { createPostgresConsumerSchemaConfig } from "@rejot-dev/adapter-postgres";
 import { createConsumerSchema } from "@rejot-dev/contract/consumer-schema";
 
-const orderSchema = createConsumerSchema({
+const orderSchema = createConsumerSchema("orders-schema", {
   source: {
     manifestSlug: "from-accounts",
     publicSchema: {
@@ -9,12 +9,20 @@ const orderSchema = createConsumerSchema({
       majorVersion: 1,
     },
   },
-  destinationDataStoreSlug: "orders",
-  transformations: [
-    createPostgresConsumerSchemaTransformation(
-      "INSERT INTO destination_accounts (id, name) VALUES (:id, :name) ON CONFLICT (id) DO UPDATE SET name = :name",
-    ),
-  ],
+  config: createPostgresConsumerSchemaConfig(
+    "orders",
+    `INSERT INTO destination_accounts
+        (id, name)
+      VALUES
+        (:id, :name)
+      ON CONFLICT (id) DO UPDATE
+        SET name = :name
+      ;
+    `,
+    {
+      deleteSql: "DELETE FROM destination_accounts WHERE id = :id",
+    },
+  ),
 });
 
 export default {

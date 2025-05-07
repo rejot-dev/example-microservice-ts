@@ -1,24 +1,35 @@
 import { z } from "zod";
 
-import { createPostgresPublicSchemaTransformation } from "@rejot-dev/adapter-postgres";
+import {
+  createPostgresPublicSchemaTransformations,
+  PostgresPublicSchemaConfigBuilder,
+} from "@rejot-dev/adapter-postgres";
 import { createPublicSchema } from "@rejot-dev/contract/public-schema";
 
 const accountSchema = createPublicSchema("accounts-schema", {
-  source: { dataStoreSlug: "accounts", tables: ["accounts"] },
+  source: { dataStoreSlug: "accounts" },
   outputSchema: z.object({
-    id: z.string(),
+    id: z.number(),
     name: z.string(),
+    email: z.string(),
   }),
-  transformations: [
-    createPostgresPublicSchemaTransformation(
-      "accounts",
-      `SELECT id, name FROM accounts WHERE id = $1`,
-    ),
-  ],
+  config: new PostgresPublicSchemaConfigBuilder()
+    .addTransformation([
+      ...createPostgresPublicSchemaTransformations(
+        "insertOrUpdate",
+        "accounts",
+        `SELECT a.id, a.name as "name", a.email as "email"
+         FROM accounts a
+         WHERE a.id = :id`,
+      ),
+    ])
+    .build(),
   version: {
     major: 1,
     minor: 0,
   },
 });
 
-export default { accountSchema };
+export default {
+  accountSchema,
+};
