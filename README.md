@@ -25,15 +25,7 @@ See the [`docker-compose.yaml`](./docker-compose.yaml) file for details on how a
 
 To get the application running locally using Docker:
 
-1. **Install dependencies:**
-
-   ```bash
-   bun install
-   ```
-
-   The docker compose file uses this entire directory as the working directory for the rejot-sync service. As a result, you need to install dependencies before starting the services.
-
-2. **Build and start all services:**
+1. **Build and start all services:**
 
    ```bash
    docker compose up -d
@@ -41,12 +33,14 @@ To get the application running locally using Docker:
 
    This command starts all services (databases, backend services, frontend shop, and sync services) in the background.
 
+   This automatically installs the dependencies for the sync services. You might need to run this command after the installation of dependencies, as the install might not be complete.
+
    To use production ports, run `docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d`.
 
-3. **Access the shop:**
+2. **Access the shop:**
    Once the services are up (which might take a minute for health checks to pass), you can access the ShopJot frontend at [http://localhost:5173](http://localhost:5173).
 
-4. **Stop the services:**
+3. **Stop the services:**
 
    ```bash
    docker compose down
@@ -93,23 +87,44 @@ This script stops containers, removes volumes, and cleans up ReJot state files.
 
 ## How this repository was created
 
-1. Define the schemas for the public and consumer schemas.
+1. Create the manifest file: `rejot-cli manifest init --slug from-accounts` and `rejot-cli manifest init --slug to-orders`.
+2. Define the schemas for the public and consumer schemas.
    See [`packages/sync-models/src/account-schema.ts`](./packages/sync-models/src/account-schema.ts) and [`packages/sync-models/src/order-schema.ts`](./packages/sync-models/src/order-schema.ts).
-2. Run `rejot-cli collect packages/sync-models/src/account-schema.ts --manifest rejot-manifest.from-accounts.json --write` to create the manifest for the public schema.
-3. Run `rejot-cli collect packages/sync-models/src/order-schema.ts --manifest rejot-manifest.to-orders.json --write` to create the manifest for the consumer schema.
-4. Create a new secret manifest file: `rejot-cli manifest init --slug manifest-secret`.
-5. Add database and eventstore connections to the secret manifest file.
+3. Run `rejot-cli collect packages/sync-models/src/account-schema.ts --manifest rejot-manifest.from-accounts.json --write` to create the manifest for the public schema.
+4. Run `rejot-cli collect packages/sync-models/src/order-schema.ts --manifest rejot-manifest.to-orders.json --write` to create the manifest for the consumer schema.
+5. Add the connections for databases to the manifest file.
 
 ```bash
 rejot-cli manifest connection add \
-        --slug "my-datastore" \
+        --slug "accounts" \
         --type postgres \
         --database postgres \
-        --host localhost \
-        --password example \
+        --host db-accounts \
+        --password postgres \
         --port 5432 \
         --user postgres
+
+rejot-cli manifest datastore add \
+            --connection accounts \
+            --publication rejot_publication \
+            --slot rejot_slot
 ```
 
-6. Run `rejot-cli manifest sync --log-level trace rejot-manifest.from-accounts.json secret-manifest.json` to synchronize the public schema.
-7. Run `rejot-cli manifest sync --log-level trace rejot-manifest.to-orders.json secret-manifest.json` to synchronize the consumer schema.
+6. Add the connection for the eventstore to the manifest file.
+
+```bash
+rejot-cli manifest connection add \
+        --slug "eventstore" \
+        --type postgres \
+        --database postgres \
+        --host db-eventstore \
+        --password postgres \
+        --port 5432 \
+        --user postgres
+
+rejot-cli manifest eventstore add \
+            --connection eventstore
+```
+
+6. Run `rejot-cli manifest sync --log-level trace rejot-manifest.from-accounts.json` to synchronize the public schema.
+7. Run `rejot-cli manifest sync --log-level trace rejot-manifest.to-orders.json` to synchronize the consumer schema.
