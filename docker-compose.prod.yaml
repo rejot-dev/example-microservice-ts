@@ -2,3 +2,30 @@ services:
   shop:
     ports:
       - 80:5173
+  rejot-sync-from-accounts:
+    command:
+      [
+        "manifest",
+        "sync",
+        "--log-level",
+        "info",
+        "/example/rejot-manifest.from-accounts.json",
+        "--hostname",
+        "0.0.0.0",
+        "--api-port",
+        "80",
+      ]
+  rejot-sync-to-orders:
+    command:
+      [
+        "manifest",
+        "sync",
+        "--log-level",
+        "info",
+        "/example/rejot-manifest.to-orders.json",
+        "/example/rejot-manifest.from-accounts.json",
+        "--hostname",
+        "0.0.0.0",
+        "--api-port",
+        "80",
+      ]
