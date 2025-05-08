@@ -6,18 +6,18 @@ This repository contains a demo webshop application called ShopJot, built using 
 
 ShopJot consists of two main microservices:
 
-- **Accounts Service**: Manages user account registration and address details.
+- **Accounts Service**: Manages user account registration details.
 - **Orders Service**: Handles product information and new orders. Orders are linked to accounts, creating a dependency between the two services.
 
 Data synchronization between these services is managed by ReJot:
 
 1.  The Accounts service makes its data available via a ReJot "Public Schema".
-2.  **Sync Service A** (`sync-a-service`) reads changes from the Accounts database (`db-accounts`) and writes them as events to the **Event Store** (`eventstore`).
-3.  **Sync Service B** (`sync-b-service`) reads events from the Event Store and applies the relevant changes to the Orders database (`db-orders`), ensuring the Orders service has a consistent view of account data.
+2.  **ReJot Sync From Accounts** (`rejot-sync-from-accounts`) reads changes from the Accounts database (`db-accounts`) and writes them as events to the **Event Store** (`eventstore`).
+3.  **ReJot Sync To Orders** (`rejot-sync-to-orders`) reads events from the Event Store and applies the relevant changes to the Orders database (`db-orders`), ensuring the Orders service has a consistent view of account data.
 
 This data flow looks like this:
 
-`Accounts Service` → `(Sync-A)` → `Event Store` → `(Sync-B)` → `Orders Service`
+`Accounts Service` → `(ReJot Sync From Accounts)` → `Event Store` → `(ReJot Sync To Orders)` → `Orders Service`
 
 See the [`docker-compose.yaml`](./docker-compose.yaml) file for details on how all these services are deployed.
 
@@ -25,85 +25,26 @@ See the [`docker-compose.yaml`](./docker-compose.yaml) file for details on how a
 
 To get the application running locally using Docker:
 
-1.  **Build and start all services:**
+1. **Build and start all services:**
 
-    ```bash
-    docker compose up -d
-    ```
+   ```bash
+   docker compose up -d
+   ```
 
-    This command starts all services (databases, backend services, frontend shop, and sync services) in the background.
+   This command starts all services (databases, backend services, frontend shop, and sync services) in the background.
 
-2.  **Access the shop:**
-    Once the services are up (which might take a minute for health checks to pass), you can access the ShopJot frontend at [http://localhost:5173](http://localhost:5173).
+   This automatically installs the dependencies for the sync services. You might need to run this command after the installation of dependencies, as the install might not be complete.
 
-3.  **Stop the services:**
-    ```bash
-    docker compose down
-    ```
+   To use production ports, run `docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d`.
 
-## Detailed ReJot Setup
+2. **Access the shop:**
+   Once the services are up (which might take a minute for health checks to pass), you can access the ShopJot frontend at [http://localhost:5173](http://localhost:5173).
 
-The following steps outline how the configuration in this repo came to be.
+3. **Stop the services:**
 
-### 1. Initialize Manifests and Connections
-
-Define the data stores and how ReJot connects to them.
-
-```bash
-# Initialize manifest for the first sync process (Accounts -> EventStore)
-bunx rejot-cli manifest init --slug "sync-a" --output sync-a.json
-# Add connections to the accounts database and the event store
-bunx rejot-cli manifest connection add --manifest sync-a.json --slug "db-accounts" --connection-string "postgres://postgres:postgres@db-accounts:5432/postgres"
-bunx rejot-cli manifest connection add --manifest sync-a.json --slug "eventstore" --connection-string "postgres://postgres:postgres@eventstore:5432/postgres"
-# Define the accounts database as a source datastore
-bunx rejot-cli manifest datastore add --manifest sync-a.json --connection db-accounts
-# Define the event store
-bunx rejot-cli manifest eventstore add --manifest sync-a.json --connection eventstore
-
-# Initialize manifest for the second sync process (EventStore -> Orders)
-bunx rejot-cli manifest init --slug "sync-b" --output sync-b.json
-# Add connections to the orders database and the event store (reusing definition)
-bunx rejot-cli manifest connection add --manifest sync-b.json --slug "db-orders" --connection-string "postgres://postgres:postgres@db-orders:5432/postgres"
-bunx rejot-cli manifest connection add --manifest sync-b.json --slug "eventstore" --connection-string "postgres://postgres:postgres@eventstore:5432/postgres"
-# Define the orders database as a target datastore
-bunx rejot-cli manifest datastore add --manifest sync-b.json --connection db-orders
-# Define the event store (reusing definition)
-bunx rejot-cli manifest eventstore add --manifest sync-b.json --connection eventstore --depends-on sync-a
-```
-
-_Note: The actual manifests `sync-a.json` and `sync-b.json` are already present in the repository._
-
-### 2. Define and Collect Public and Consumer Schemas
-
-Define which tables/columns the Accounts service should expose.
-This is handled through two `sync-a.ts` and `sync-b.ts` definition files, normally for a project this small a single sync service would be fine.
-
-```bash
-bun collect
-```
-
-### 3. Start Sync Services
-
-If not using the main `docker compose up` command, you can start individual sync services.
-
-Start the first sync service (Accounts -> Event Store):
-
-```bash
-docker compose up sync-a-service --build
-```
-
-This service pushes changes from `db-accounts` to the `eventstore`.
-
-Start the second sync service (Sync A -> Orders):
-
-```bash
-# Ensure db-orders is ready first if running manually
-docker compose up db-orders -d --wait
-# Start the sync service
-docker compose up sync-b-service --build
-```
-
-This service consumes events from the `eventstore` and updates `db-orders`.
+   ```bash
+   docker compose down
+   ```
 
 ## Debugging
 
@@ -114,7 +55,7 @@ You can connect to the PostgreSQL databases running in Docker using `psql`.
 For example, you can connect to the Event Store:
 
 ```bash
-docker compose exec eventstore psql -U postgres -d postgres
+docker compose exec db-eventstore psql -U postgres -d postgres
 ```
 
 Inside `psql`, you can inspect ReJot tables, e.g.:
@@ -143,3 +84,47 @@ To reset all databases and Docker volumes to a clean slate:
 ```
 
 This script stops containers, removes volumes, and cleans up ReJot state files.
+
+## How this repository was created
+
+1. Create the manifest file: `rejot-cli manifest init --slug from-accounts` and `rejot-cli manifest init --slug to-orders`.
+2. Define the schemas for the public and consumer schemas.
+   See [`packages/sync-models/src/account-schema.ts`](./packages/sync-models/src/account-schema.ts) and [`packages/sync-models/src/order-schema.ts`](./packages/sync-models/src/order-schema.ts).
+3. Run `rejot-cli collect packages/sync-models/src/account-schema.ts --manifest rejot-manifest.from-accounts.json --write` to create the manifest for the public schema.
+4. Run `rejot-cli collect packages/sync-models/src/order-schema.ts --manifest rejot-manifest.to-orders.json --write` to create the manifest for the consumer schema.
+5. Add the connections for databases to the manifest file.
+
+```bash
+rejot-cli manifest connection add \
+        --slug "accounts" \
+        --type postgres \
+        --database postgres \
+        --host db-accounts \
+        --password postgres \
+        --port 5432 \
+        --user postgres
+
+rejot-cli manifest datastore add \
+            --connection accounts \
+            --publication rejot_publication \
+            --slot rejot_slot
+```
+
+6. Add the connection for the eventstore to the manifest file.
+
+```bash
+rejot-cli manifest connection add \
+        --slug "eventstore" \
+        --type postgres \
+        --database postgres \
+        --host db-eventstore \
+        --password postgres \
+        --port 5432 \
+        --user postgres
+
+rejot-cli manifest eventstore add \
+            --connection eventstore
+```
+
+6. Run `rejot-cli manifest sync --log-level trace rejot-manifest.from-accounts.json` to synchronize the public schema.
+7. Run `rejot-cli manifest sync --log-level trace rejot-manifest.to-orders.json` to synchronize the consumer schema.

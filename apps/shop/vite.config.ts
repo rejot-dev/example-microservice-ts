@@ -12,6 +12,7 @@ export default defineConfig({
     },
   },
   server: {
+    allowedHosts: ["localhost", "example.rejot.dev"],
     proxy: {
       "/api/accounts": {
         target: "http://accounts:3000",
@@ -23,15 +24,15 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/orders/, ""),
       },
-      "/sync/sync-a": {
-        target: "http://sync-a-service:80",
+      "/sync/rejot-sync-from-accounts": {
+        target: "http://rejot-sync-from-accounts:80",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/sync\/sync-a/, ""),
+        rewrite: (path) => path.replace(/^\/sync\/rejot-sync-from-accounts/, ""),
       },
-      "/sync/sync-b": {
-        target: "http://sync-b-service:80",
+      "/sync/rejot-sync-to-orders": {
+        target: "http://rejot-sync-to-orders:80",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/sync\/sync-b/, ""),
+        rewrite: (path) => path.replace(/^\/sync\/rejot-sync-to-orders/, ""),
       },
     },
   },

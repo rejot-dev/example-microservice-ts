@@ -8,12 +8,12 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@rejot-dev/adapter-postgres": "^0.0.10",
-    "@rejot-dev/contract": "^0.0.10",
-    "@rejot-dev/contract-tools": "^0.0.10"
+    "@rejot-dev/adapter-postgres": "^0.0.15",
+    "@rejot-dev/contract": "^0.0.15",
+    "@rejot-dev/contract-tools": "^0.0.15"
   },
   "exports": {
-    "./sync-a": "./src/sync-a.ts",
-    "./sync-b": "./src/sync-b.ts"
+    "./account-schema": "./src/account-schema.ts",
+    "./order-schema": "./src/order-schema.ts"
   }
 }

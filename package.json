@@ -5,7 +5,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "pre-commit": "lefthook run pre-commit",
-    "collect": "rejot-cli collect --manifest sync-a.json packages/sync-models/src/sync-a.ts --write && rejot-cli collect --manifest sync-b.json packages/sync-models/src/sync-b.ts --write"
+    "collect": "rejot-cli collect --manifest rejot-manifest.from-accounts.json packages/sync-models/src/account-schema.ts --write && rejot-cli collect --manifest rejot-manifest.to-orders.json packages/sync-models/src/order-schema.ts --write"
   },
   "engines": {
     "node": ">=22"
@@ -17,7 +17,7 @@
   ],
   "devDependencies": {
     "@eslint/js": "^9.20.0",
-    "@rejot-dev/cli": "0.0.10",
+    "@rejot-dev/cli": "0.0.15",
     "@types/bun": "latest",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/eslint-plugin-tailwindcss": "^3.17.0",

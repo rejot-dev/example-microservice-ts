@@ -1,0 +1,90 @@
+{
+  "slug": "from-accounts",
+  "manifestVersion": 0,
+  "$schema": "https://unpkg.com/@rejot-dev/contract@0.0.15/schema.json",
+  "connections": [
+    {
+      "slug": "accounts",
+      "config": {
+        "connectionType": "postgres",
+        "host": "db-accounts",
+        "port": 5432,
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres"
+      }
+    },
+    {
+      "slug": "eventstore",
+      "config": {
+        "connectionType": "postgres",
+        "host": "db-eventstore",
+        "port": 5432,
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres"
+      }
+    }
+  ],
+  "dataStores": [
+    {
+      "connectionSlug": "accounts",
+      "config": {
+        "connectionType": "postgres",
+        "slotName": "rejot_slot",
+        "publicationName": "rejot_publication"
+      }
+    }
+  ],
+  "eventStores": [
+    {
+      "connectionSlug": "eventstore"
+    }
+  ],
+  "publicSchemas": [
+    {
+      "name": "accounts-schema",
+      "source": {
+        "dataStoreSlug": "accounts"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "name", "email"],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "version": {
+        "major": 1,
+        "minor": 0
+      },
+      "config": {
+        "publicSchemaType": "postgres",
+        "transformations": [
+          {
+            "operation": "insert",
+            "table": "accounts",
+            "sql": "SELECT a.id, a.name as \"name\", a.email as \"email\"\n         FROM accounts a\n         WHERE a.id = :id"
+          },
+          {
+            "operation": "update",
+            "table": "accounts",
+            "sql": "SELECT a.id, a.name as \"name\", a.email as \"email\"\n         FROM accounts a\n         WHERE a.id = :id"
+          }
+        ]
+      },
+      "definitionFile": "packages/sync-models/src/account-schema.ts"
+    }
+  ],
+  "consumerSchemas": []
+}

@@ -18,18 +18,31 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
     command: ["-c", "config_file=/postgresql.conf"]
+    ports:
+      - 5435:5432
 
   db-orders:
     <<: *postgres
     volumes:
       - orders-data:/var/lib/postgresql/data
       - ./postgres.conf:/postgresql.conf
+    ports:
+      - 5436:5432
 
-  eventstore:
+  db-eventstore:
     <<: *postgres
     volumes:
       - eventstore-data:/var/lib/postgresql/data
       - ./postgres.conf:/postgresql.conf
+    ports:
+      - 5437:5432
+
+  bun-init:
+    image: oven/bun:1.2.6
+    volumes:
+      - ./:/example
+    working_dir: /example
+    command: ["bun", "install"]
 
   accounts:
     image: oven/bun:1.2.6
@@ -41,6 +54,7 @@ services:
         restart: true
     environment:
       DATABASE_URL: "postgres://postgres:postgres@db-accounts:5432/postgres"
+      EVENTSTORE_DATABASE_URL: "postgres://postgres:postgres@db-eventstore:5432/postgres"
     working_dir: /example/apps/accounts
     command: ["bun", "run", "dev"]
 
@@ -54,6 +68,7 @@ services:
         restart: true
     environment:
       DATABASE_URL: "postgres://postgres:postgres@db-orders:5432/postgres"
+      EVENTSTORE_DATABASE_URL: "postgres://postgres:postgres@db-eventstore:5432/postgres"
     working_dir: /example/apps/orders
     command: ["bun", "run", "dev"]
 
@@ -69,59 +84,37 @@ services:
     ports:
       - 5173:5173
 
-  sync-a-service: &sync-server
-    image: ghcr.io/rejot-dev/rejot-cli:v0.0.10
+  rejot-sync-from-accounts: &rejot-sync-from-accounts
+    image: ghcr.io/rejot-dev/rejot-cli:v0.0.15
     depends_on:
-      db-accounts:
-        condition: service_healthy
-        restart: true
-      eventstore:
-        condition: service_healthy
-        restart: true
-    volumes:
-      - ./:/example
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:80/status"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-      timeout: 10s
+      - accounts
+      - orders
+      - db-eventstore
     command:
       [
         "manifest",
         "sync",
         "--log-level",
         "trace",
-        "/example/sync-a.json",
+        "/example/rejot-manifest.from-accounts.json",
         "--hostname",
         "0.0.0.0",
         "--api-port",
         "80",
       ]
+    volumes:
+      - ./:/example
 
-  sync-b-service:
-    <<: *sync-server
-    depends_on:
-      db-orders:
-        condition: service_healthy
-        restart: true
-      eventstore:
-        condition: service_healthy
-        restart: true
-      sync-a-service:
-        condition: service_healthy
-        restart: true
-    environment:
-      REJOT_SYNC_SERVICE_sync-a: sync-a-service
+  rejot-sync-to-orders:
+    <<: *rejot-sync-from-accounts
     command:
       [
         "manifest",
         "sync",
         "--log-level",
         "trace",
-        "/example/sync-b.json",
-        "--resolver",
-        "env",
+        "/example/rejot-manifest.to-orders.json",
+        "/example/rejot-manifest.from-accounts.json",
         "--hostname",
         "0.0.0.0",
         "--api-port",

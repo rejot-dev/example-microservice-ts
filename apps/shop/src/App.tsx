@@ -1,7 +1,11 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import StatusSidebar from "./components/StatusSidebar";
+import EventsList from "./components/EventsList";
 
 function App() {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
   return (
     <div className="flex min-h-svh flex-row bg-gray-100">
       <StatusSidebar />
@@ -67,8 +71,21 @@ function App() {
             </li>
           </ul>
         </nav>
-        <main className="w-full flex-grow rounded bg-white p-6 shadow">
-          <Outlet />
+        <main className="h-full w-full flex-grow rounded bg-white p-6 shadow">
+          {isHomePage ? (
+            <Outlet />
+          ) : (
+            <div className="flex h-full gap-6">
+              <div className="flex-1">
+                <Outlet />
+              </div>
+              <div className="w-1/2 rounded bg-white p-6 shadow-lg">
+                <h2 className="mb-4 text-xl font-semibold">Recent Events</h2>
+                <h4 className="mb-4 text-sm">Note: Refreshes every 5 seconds</h4>
+                <EventsList />
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>

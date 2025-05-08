@@ -5,6 +5,8 @@ import {
   GetAccountResponse,
   CreateAccountResponseSchema,
   GetAccountResponseSchema,
+  GetEventResponse,
+  GetEventResponseSchema,
 } from "@example/shared/accounts-api";
 import {
   CreateOrderRequestSchema,
@@ -151,6 +153,17 @@ export const createOrder = (data: CreateOrderRequest): Promise<CreateOrderRespon
     CreateOrderRequestSchema,
   );
 
+// Events
+export const getEvents = async (): Promise<GetEventResponse[]> => {
+  const response = await apiFetch(
+    ACCOUNTS_SERVICE_URL,
+    "/events",
+    "GET",
+    GetEventResponseSchema.array(),
+  );
+  return response;
+};
+
 // Export types needed by UI components
 export type {
   GetAccountResponse,
@@ -163,4 +176,5 @@ export type {
   GetOrdersResponse,
   CreateOrderRequest,
   GetDestinationAccountResponse,
+  GetEventResponse,
 };

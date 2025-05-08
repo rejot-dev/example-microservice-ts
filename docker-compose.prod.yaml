@@ -1,0 +1,51 @@
+services:
+  shop:
+    ports:
+      - 80:5173
+
+  db-cleanup:
+    image: postgres:17-bookworm
+    volumes:
+      - ./:/scripts
+    depends_on:
+      - db-accounts
+      - db-orders
+      - db-eventstore
+    entrypoint: |
+      bash -c '
+        apt-get update && apt-get install -y cron
+        chmod +x /scripts/cleanup-dbs.sh
+        echo "*/10 * * * * /scripts/cleanup-dbs.sh >> /var/log/cron.log 2>&1" > /etc/cron.d/cleanup-cron
+        chmod 0644 /etc/cron.d/cleanup-cron
+        crontab /etc/cron.d/cleanup-cron
+        touch /var/log/cron.log
+        cron && tail -f /var/log/cron.log
+      '
+
+  rejot-sync-from-accounts:
+    command:
+      [
+        "manifest",
+        "sync",
+        "--log-level",
+        "error",
+        "/example/rejot-manifest.from-accounts.json",
+        "--hostname",
+        "0.0.0.0",
+        "--api-port",
+        "80",
+      ]
+  rejot-sync-to-orders:
+    command:
+      [
+        "manifest",
+        "sync",
+        "--log-level",
+        "error",
+        "/example/rejot-manifest.to-orders.json",
+        "/example/rejot-manifest.from-accounts.json",
+        "--hostname",
+        "0.0.0.0",
+        "--api-port",
+        "80",
+      ]

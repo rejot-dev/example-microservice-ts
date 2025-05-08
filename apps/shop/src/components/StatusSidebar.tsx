@@ -6,12 +6,12 @@ const StatusResponseSchema = z.object({
 });
 type SyncStatus = z.infer<typeof StatusResponseSchema>["state"] | "unreachable";
 
-type SyncServices = "sync-a" | "sync-b";
+type SyncServices = "rejot-sync-from-accounts" | "rejot-sync-to-orders";
 type MicroServices = "accounts" | "orders";
 
 const STATUS_URLS: Record<SyncServices, string> = {
-  "sync-a": "/sync/sync-a/status",
-  "sync-b": "/sync/sync-b/status",
+  "rejot-sync-from-accounts": "/sync/rejot-sync-from-accounts/status",
+  "rejot-sync-to-orders": "/sync/rejot-sync-to-orders/status",
 };
 
 const MICROSERVICE_URLS: Record<MicroServices, string> = {
