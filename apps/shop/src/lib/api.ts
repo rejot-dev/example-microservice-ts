@@ -153,7 +153,7 @@ export const createOrder = (data: CreateOrderRequest): Promise<CreateOrderRespon
     CreateOrderRequestSchema,
   );
 
-// Events
+// Events (for demonstration purposes only)
 export const getEvents = async (): Promise<GetEventResponse[]> => {
   const response = await apiFetch(
     ACCOUNTS_SERVICE_URL,
