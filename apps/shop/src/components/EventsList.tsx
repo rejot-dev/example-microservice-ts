@@ -12,7 +12,7 @@ const EventsList: React.FC = () => {
   } = useQuery<GetEventResponse[], Error>({
     queryKey: ["events"],
     queryFn: getEvents,
-    refetchInterval: 5000, // Refresh every 5 seconds
+    refetchInterval: 1000, // Refresh every 1 second
   });
 
   if (isLoading) {
@@ -53,7 +53,10 @@ const EventsList: React.FC = () => {
           </TableHeader>
           <TableBody>
             {events.map((event) => (
-              <TableRow key={event.transaction_id}>
+              <TableRow
+                key={event.transaction_id}
+                className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+              >
                 <TableCell>{event.transaction_id}</TableCell>
                 <TableCell>{event.operation}</TableCell>
                 <TableCell>{event.manifest_slug}</TableCell>

@@ -81,7 +81,7 @@ function App() {
               </div>
               <div className="w-1/2 rounded bg-white p-6 shadow-lg">
                 <h2 className="mb-4 text-xl font-semibold">Recent Events</h2>
-                <h4 className="mb-4 text-sm">Note: Refreshes every 5 seconds</h4>
+                <h4 className="mb-4 text-sm">Note: Refreshes every second</h4>
                 <EventsList />
               </div>
             </div>
