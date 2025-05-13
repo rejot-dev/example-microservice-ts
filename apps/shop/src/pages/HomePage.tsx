@@ -57,7 +57,7 @@ const HomePage: React.FC = () => {
           <p>
             The accounts service exposes its accounts data through a "Public Schema" called
             "accounts" to the order service. Our two sync services then take are of giving the order
-            service a consistent view of the accounts. Note that at this size a single sync service
+            service a consistent view of the accounts. Note that at this size a, single sync service
             would have been enough but for demonstration purposes we have split them up.
           </p>
 
