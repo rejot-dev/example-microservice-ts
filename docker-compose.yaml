@@ -49,6 +49,8 @@ services:
     volumes:
       - ./:/example
     depends_on:
+      bun-init:
+        condition: service_completed_successfully
       db-accounts:
         condition: service_healthy
         restart: true
@@ -63,6 +65,8 @@ services:
     volumes:
       - ./:/example
     depends_on:
+      bun-init:
+        condition: service_completed_successfully
       db-orders:
         condition: service_healthy
         restart: true
@@ -79,8 +83,12 @@ services:
     working_dir: /example/apps/shop
     command: ["bun", "run", "dev", "--host", "0.0.0.0"]
     depends_on:
-      - accounts
-      - orders
+      bun-init:
+        condition: service_completed_successfully
+      accounts:
+        condition: service_started
+      orders:
+        condition: service_started
     ports:
       - 5173:5173
 
