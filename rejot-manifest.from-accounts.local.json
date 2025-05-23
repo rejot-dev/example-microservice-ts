@@ -1,0 +1,46 @@
+{
+  "slug": "from-accounts-local",
+  "manifestVersion": 0,
+  "$schema": "https://unpkg.com/@rejot-dev/contract@0.0.15/schema.json",
+  "connections": [
+    {
+      "slug": "accounts",
+      "config": {
+        "connectionType": "postgres",
+        "host": "localhost",
+        "port": 5435,
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres"
+      }
+    },
+    {
+      "slug": "eventstore",
+      "config": {
+        "connectionType": "postgres",
+        "host": "localhost",
+        "port": 5437,
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres"
+      }
+    }
+  ],
+  "dataStores": [
+    {
+      "connectionSlug": "accounts",
+      "config": {
+        "connectionType": "postgres",
+        "slotName": "rejot_slot",
+        "publicationName": "rejot_publication"
+      }
+    }
+  ],
+  "eventStores": [
+    {
+      "connectionSlug": "eventstore"
+    }
+  ],
+  "publicSchemas": [],
+  "consumerSchemas": []
+}
