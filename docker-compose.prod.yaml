@@ -26,7 +26,7 @@ services:
       dockerfile: prod/Dockerfile
       target: prod
     ports:
-      - 5175:80
+      - 80:80
 
   rejot-sync-from-accounts:
     command:
