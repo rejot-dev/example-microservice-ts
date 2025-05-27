@@ -3,7 +3,7 @@ import { createConsumerSchema } from "@rejot-dev/contract/consumer-schema";
 
 const orderSchema = createConsumerSchema("orders-schema", {
   source: {
-    manifestSlug: "from-accounts",
+    manifestSlug: "fromaccounts",
     publicSchema: {
       name: "accounts-schema",
       majorVersion: 1,
