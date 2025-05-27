@@ -115,6 +115,8 @@ services:
 
   rejot-sync-to-orders:
     <<: *rejot-sync-from-accounts
+    environment:
+      REJOT_SYNC_SERVICE_fromaccounts: "http://rejot-sync-from-accounts:80"
     command:
       [
         "manifest",
@@ -126,4 +128,6 @@ services:
         "0.0.0.0",
         "--api-port",
         "80",
+        "--resolver",
+        "env",
       ]

@@ -1,5 +1,5 @@
 {
-  "slug": "from-accounts",
+  "slug": "fromaccounts",
   "manifestVersion": 0,
   "$schema": "https://unpkg.com/@rejot-dev/contract@latest/schema.json",
   "connections": [],

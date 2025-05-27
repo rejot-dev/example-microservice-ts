@@ -1,7 +1,7 @@
 {
-  "slug": "workspace-from-accounts",
+  "slug": "workspacefromaccounts",
   "manifestVersion": 0,
-  "$schema": "https://unpkg.com/@rejot-dev/contract@0.1.3/schema.json",
+  "$schema": "https://unpkg.com/@rejot-dev/contract@latest/schema.json",
   "connections": [],
   "dataStores": [],
   "eventStores": [],
@@ -9,6 +9,6 @@
   "consumerSchemas": [],
   "workspaces": [
     "rejot-manifest.from-accounts.base.json",
-    "rejot-manifest.from-accounts.local.json"
+    "rejot-manifest.from-accounts.docker.json"
   ]
 }
