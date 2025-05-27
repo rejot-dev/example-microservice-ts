@@ -104,7 +104,7 @@ services:
         "sync",
         "--log-level",
         "trace",
-        "/example/rejot-manifest.from-accounts.json",
+        "/example/workspace.from-accounts.json",
         "--hostname",
         "0.0.0.0",
         "--api-port",
@@ -115,16 +115,19 @@ services:
 
   rejot-sync-to-orders:
     <<: *rejot-sync-from-accounts
+    environment:
+      REJOT_SYNC_SERVICE_fromaccounts: "http://rejot-sync-from-accounts:80"
     command:
       [
         "manifest",
         "sync",
         "--log-level",
         "trace",
-        "/example/rejot-manifest.to-orders.json",
-        "/example/rejot-manifest.from-accounts.json",
+        "/example/workspace.to-orders.json",
         "--hostname",
         "0.0.0.0",
         "--api-port",
         "80",
+        "--resolver",
+        "env",
       ]

@@ -1,0 +1,46 @@
+{
+  "slug": "to-orders-docker",
+  "manifestVersion": 0,
+  "$schema": "https://unpkg.com/@rejot-dev/contract@latest/schema.json",
+  "connections": [
+    {
+      "slug": "orders",
+      "config": {
+        "connectionType": "postgres",
+        "host": "orders-db",
+        "port": 5432,
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres"
+      }
+    },
+    {
+      "slug": "eventstore",
+      "config": {
+        "connectionType": "postgres",
+        "host": "eventstore-db",
+        "port": 5432,
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres"
+      }
+    }
+  ],
+  "dataStores": [
+    {
+      "connectionSlug": "orders",
+      "config": {
+        "connectionType": "postgres",
+        "slotName": "rejot_slot",
+        "publicationName": "rejot_publication"
+      }
+    }
+  ],
+  "eventStores": [
+    {
+      "connectionSlug": "eventstore"
+    }
+  ],
+  "publicSchemas": [],
+  "consumerSchemas": []
+}

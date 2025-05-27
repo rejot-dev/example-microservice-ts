@@ -1,0 +1,23 @@
+{
+  "slug": "to-orders",
+  "manifestVersion": 0,
+  "$schema": "https://unpkg.com/@rejot-dev/contract@latest/schema.json",
+  "publicSchemas": [],
+  "consumerSchemas": [
+    {
+      "name": "orders-schema",
+      "sourceManifestSlug": "fromaccounts",
+      "publicSchema": {
+        "name": "accounts-schema",
+        "majorVersion": 1
+      },
+      "definitionFile": "packages/sync-models/src/order-schema.ts",
+      "config": {
+        "consumerSchemaType": "postgres",
+        "destinationDataStoreSlug": "orders",
+        "sql": "INSERT INTO destination_accounts\n        (id, name)\n      VALUES\n        (:id, :name)\n      ON CONFLICT (id) DO UPDATE\n        SET name = :name\n      ;\n    ",
+        "deleteSql": "DELETE FROM destination_accounts WHERE id = :id"
+      }
+    }
+  ]
+}

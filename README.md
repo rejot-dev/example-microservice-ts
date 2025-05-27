@@ -87,15 +87,19 @@ This script stops containers, removes volumes, and cleans up ReJot state files.
 
 ## How this repository was created
 
-1. Create the manifest file: `rejot-cli manifest init --slug from-accounts` and `rejot-cli manifest init --slug to-orders`.
+1. Create the manifest files. One manifest for connection information (ending in `-docker`), and one for consumer/public schemas.
+   1. `rejot-cli manifest init --slug fromaccounts --manifest rejot-manifest.from-accounts.base.json`
+   2. `rejot-cli manifest init --slug from-accounts-docker --manifest rejot-manifest.from-accounts.docker.json`
+   3. `rejot-cli manifest init --slug toorders --manifest rejot-manifest.to-orders.base.json` 4.`rejot-cli manifest init --slug to-orders-docker --manifest rejot-manifest.to-orders.docker.json`.
 2. Define the schemas for the public and consumer schemas.
    See [`packages/sync-models/src/account-schema.ts`](./packages/sync-models/src/account-schema.ts) and [`packages/sync-models/src/order-schema.ts`](./packages/sync-models/src/order-schema.ts).
-3. Run `rejot-cli collect packages/sync-models/src/account-schema.ts --manifest rejot-manifest.from-accounts.json --write` to create the manifest for the public schema.
-4. Run `rejot-cli collect packages/sync-models/src/order-schema.ts --manifest rejot-manifest.to-orders.json --write` to create the manifest for the consumer schema.
-5. Add the connections for databases to the manifest file.
+3. Run `rejot-cli collect packages/sync-models/src/account-schema.ts --manifest rejot-manifest.from-accounts.base.json --write` to create the manifest for the public schema.
+4. Run `rejot-cli collect packages/sync-models/src/order-schema.ts --manifest rejot-manifest.to-orders.base.json --write` to create the manifest for the consumer schema.
+5. Add the connections for databases to the manifest file, do the same for orders.
 
 ```bash
 rejot-cli manifest connection add \
+        --manifest rejot-manifest.from-accounts.docker.json \
         --slug "accounts" \
         --type postgres \
         --database postgres \
@@ -105,6 +109,7 @@ rejot-cli manifest connection add \
         --user postgres
 
 rejot-cli manifest datastore add \
+            --manifest rejot-manifest.from-accounts.docker.json \
             --connection accounts \
             --publication rejot_publication \
             --slot rejot_slot
@@ -114,6 +119,7 @@ rejot-cli manifest datastore add \
 
 ```bash
 rejot-cli manifest connection add \
+        --manifest rejot-manifest.from-accounts.docker.json \
         --slug "eventstore" \
         --type postgres \
         --database postgres \
@@ -123,8 +129,10 @@ rejot-cli manifest connection add \
         --user postgres
 
 rejot-cli manifest eventstore add \
+            --manifest rejot-manifest.from-accounts.docker.json \
             --connection eventstore
 ```
 
-6. Run `rejot-cli manifest sync --log-level trace rejot-manifest.from-accounts.json` to synchronize the public schema.
-7. Run `rejot-cli manifest sync --log-level trace rejot-manifest.to-orders.json` to synchronize the consumer schema.
+6. Run `rejot-cli manifest sync --log-level trace rejot-manifest.from-accounts.docker.json rejot-manifest.from-accounts.base.json --api-port 3000` to synchronize the public schema.
+7. Run `export REJOT_SYNC_SERVICE_fromaccounts=localhost:3000"` to link the two services
+8. Run `rejot-cli manifest sync --log-level trace rejot-manifest.to-orders.docker.json rejot-manifest.to-orders.base.json --resolver env --api-port 3001` to synchronize the consumer schema.

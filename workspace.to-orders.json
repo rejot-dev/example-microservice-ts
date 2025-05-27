@@ -1,0 +1,11 @@
+{
+  "slug": "workspace-to-orders",
+  "manifestVersion": 0,
+  "$schema": "https://unpkg.com/@rejot-dev/contract@latest/schema.json",
+  "connections": [],
+  "dataStores": [],
+  "eventStores": [],
+  "publicSchemas": [],
+  "consumerSchemas": [],
+  "workspaces": ["rejot-manifest.to-orders.base.json", "rejot-manifest.to-orders.docker.json"]
+}
