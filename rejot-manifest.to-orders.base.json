@@ -6,7 +6,7 @@
   "consumerSchemas": [
     {
       "name": "orders-schema",
-      "sourceManifestSlug": "from-accounts",
+      "sourceManifestSlug": "fromaccounts",
       "publicSchema": {
         "name": "accounts-schema",
         "majorVersion": 1
