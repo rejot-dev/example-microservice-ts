@@ -46,6 +46,18 @@ To get the application running locally using Docker:
    docker compose down
    ```
 
+## Observability
+
+To use the observability features, you can run:
+
+```bash
+docker compose -f docker-compose.yaml -f docker-compose.telemetry.yaml up -d
+```
+
+This will start the services with the telemetry features enabled. Browse to [http://localhost:3000](http://localhost:3000) to see the Grafana interface. Inside Grafana, you can see traces and metrics in the Drilldown view. The metrics are sent every 60 seconds, so you might need to wait a bit for them to show up.
+
+To view the traces, either use the Explore tab, or install the Traces Drilldown plugin inside Grafana.
+
 ## Debugging
 
 ### Accessing Databases

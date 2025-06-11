@@ -98,6 +98,8 @@ services:
       - accounts
       - orders
       - db-eventstore
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
     command:
       [
         "manifest",
@@ -119,6 +121,7 @@ services:
       - rejot-sync-from-accounts
     environment:
       REJOT_SYNC_SERVICE_fromaccounts: "rejot-sync-from-accounts:80"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
     command:
       [
         "manifest",

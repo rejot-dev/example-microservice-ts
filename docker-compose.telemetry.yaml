@@ -1,0 +1,18 @@
+volumes:
+  grafana:
+  prometheus:
+  loki:
+services:
+  # https://github.com/grafana/docker-otel-lgtm
+  otel-collector:
+    image: docker.io/grafana/otel-lgtm:0.11.0
+    ports:
+      - "3000:3000"
+      - "4317:4317"
+      - "4318:4318"
+    environment:
+      - GF_PATHS_DATA=/data/grafana
+    volumes:
+      - grafana:/data/grafana
+      - prometheus:/data/prometheus
+      - loki:/data/loki
