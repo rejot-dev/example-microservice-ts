@@ -7,7 +7,7 @@
       "slug": "orders",
       "config": {
         "connectionType": "postgres",
-        "host": "orders-db",
+        "host": "db-orders",
         "port": 5432,
         "user": "postgres",
         "password": "postgres",
@@ -18,7 +18,7 @@
       "slug": "eventstore",
       "config": {
         "connectionType": "postgres",
-        "host": "eventstore-db",
+        "host": "db-eventstore",
         "port": 5432,
         "user": "postgres",
         "password": "postgres",
